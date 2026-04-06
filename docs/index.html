@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Find The Best Doctor.</title>
+
+</head>
+<link rel="stylesheet" href="style.css">
+<script type="module" src="script.js"></script>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <main class="shell">
+    <div class="topbar">
+      <div class="toggle" role="group" aria-label="Theme toggle">
+        <span class="label" id="themeLabel">Light</span>
+        <button id="themeSwitch" class="switch" type="button" role="switch" aria-checked="false" aria-label="Toggle light/dark">
+          <span class="knob" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
+    <section class="center">
+      <h1 class="disappear">Find The Best Doctor.</h1>
+      <p class="sub disappear">Ask a question below. Pick a quick question to auto-fill the box.</p>
+      
+      <form class="composer" id="chatForm" autocomplete="off">
+        <ul id="chatbox" class="hidden">
+          </ul>
+        <div class="composer-inner">
+          <textarea
+            id="message"
+            placeholder="Send a message..."
+            rows="1"
+            maxlength="2000"
+            aria-label="Message"
+          ></textarea>
+
+          <button id="sendBtn" class="send" type="submit" disabled aria-label="Send">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 10l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="countbar">
+          <div class="count"><span id="charCount">0</span>/2000</div>
+        </div>
+      </form>
+
+      <div class="quick disappear" aria-label="Quick questions">
+        <div class="quick-title">Quick questions</div>
+        <div class="chips" id="chips">
+          <div class="chip" title="I need a surgeon for appendicitis">I need a surgeon for appendicitis</div>
+          <div class="chip" title="Who should i see for an hernia repair?">Who should i see for an hernia repair?</div>
+          <div class="chip" title="Colonoscopy near Auburndale">Colonoscopy near Auburndale</div>
+          <div class="chip" title="Find a male doctor who can help with Hepatitis.">Find a male doctor who can help with Hepatitis.</div>
+          <div class="chip" title="I have gallstones and i want a Spanish speaking doctor.">I have gallstones and i want a Spanish speaking doctor.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>
