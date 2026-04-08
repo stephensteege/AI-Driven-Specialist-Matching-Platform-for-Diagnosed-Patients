@@ -4,30 +4,33 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Find The Best Doctor.</title>
-
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<link rel="stylesheet" href="style.css">
-<script type="module" src="script.js"></script>
 <body>
-  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="page-glow page-glow-left" aria-hidden="true"></div>
+  <div class="page-glow page-glow-right" aria-hidden="true"></div>
 
   <main class="shell">
-    <div class="topbar">
+    <header class="topbar">
+      <div class="topbar-spacer"></div>
+
       <div class="toggle" role="group" aria-label="Theme toggle">
         <span class="label" id="themeLabel">Light</span>
         <button id="themeSwitch" class="switch" type="button" role="switch" aria-checked="false" aria-label="Toggle light/dark">
           <span class="knob" aria-hidden="true"></span>
         </button>
       </div>
-    </div>
+    </header>
 
     <section class="center">
-      <h1 class="disappear">Find The Best Doctor.</h1>
-      <p class="sub disappear">Ask a question below. Pick a quick question to auto-fill the box.</p>
-      
+      <div class="hero">
+        <h1>Find The Best Doctor.</h1>
+        <p class="sub">Ask a question below. Pick a quick question to auto-fill the box.</p>
+      </div>
+
       <form class="composer" id="chatForm" autocomplete="off">
-        <ul id="chatbox" class="hidden">
-          </ul>
+        <ul id="chatbox" class="chatbox hidden"></ul>
+
         <div class="composer-inner">
           <textarea
             id="message"
@@ -50,18 +53,19 @@
         </div>
       </form>
 
-      <div class="quick disappear" aria-label="Quick questions">
+      <div class="quick" aria-label="Quick questions">
         <div class="quick-title">Quick questions</div>
         <div class="chips" id="chips">
           <div class="chip" title="I need a surgeon for appendicitis">I need a surgeon for appendicitis</div>
-          <div class="chip" title="Who should i see for an hernia repair?">Who should i see for an hernia repair?</div>
+          <div class="chip" title="Who should I see for a hernia repair?">Who should I see for a hernia repair?</div>
           <div class="chip" title="Colonoscopy near Auburndale">Colonoscopy near Auburndale</div>
           <div class="chip" title="Find a male doctor who can help with Hepatitis.">Find a male doctor who can help with Hepatitis.</div>
-          <div class="chip" title="I have gallstones and i want a Spanish speaking doctor.">I have gallstones and i want a Spanish speaking doctor.</div>
+          <div class="chip" title="I have gallstones and I want a Spanish speaking doctor.">I have gallstones and I want a Spanish speaking doctor.</div>
         </div>
       </div>
     </section>
   </main>
 
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
