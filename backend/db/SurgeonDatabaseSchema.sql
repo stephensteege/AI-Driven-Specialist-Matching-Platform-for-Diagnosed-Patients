@@ -1,12 +1,11 @@
 PRAGMA foreign_keys = ON;
-
 DROP TABLE IF EXISTS operation_counts;
+DROP TABLE IF EXISTS surgeon_languages;
 DROP TABLE IF EXISTS operations;
 DROP TABLE IF EXISTS surgeon_demographics;
 DROP TABLE IF EXISTS specialties;
 DROP TABLE IF EXISTS campuses;
 DROP TABLE IF EXISTS languages;
-DROP TABLE IF EXISTS surgeon_languages;
 
 CREATE TABLE specialties(
 specialty_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -17,6 +16,13 @@ CREATE TABLE campuses(
 campus_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 campus_name TEXT UNIQUE NOT NULL
 );
+
+CREATE TABLE languages(
+  language_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  language_name TEXT UNIQUE NOT NULL
+);
+
+
 
 
 CREATE TABLE surgeon_demographics (
@@ -31,10 +37,19 @@ CREATE TABLE surgeon_demographics (
   FOREIGN KEY (campus_id) REFERENCES campuses(campus_id)
 );
 
+CREATE TABLE surgeon_languages (
+    surgeon_id INTEGER NOT NULL,
+    language_id INTEGER NOT NULL,
+    PRIMARY KEY (surgeon_id, language_id),
+    FOREIGN KEY (surgeon_id) REFERENCES surgeon_demographics(surgeon_id),
+    FOREIGN KEY (language_id) REFERENCES languages(language_id)
+);
+
 CREATE TABLE operations (
 operation_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 operation_name TEXT UNIQUE NOT NULL
 );
+
 
 CREATE TABLE operation_counts(
 operation_id INTEGER NOT NULL,
