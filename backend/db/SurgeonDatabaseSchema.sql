@@ -22,9 +22,6 @@ CREATE TABLE languages(
   language_name TEXT UNIQUE NOT NULL
 );
 
-
-
-
 CREATE TABLE surgeon_demographics (
   surgeon_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   first_name TEXT,
@@ -49,7 +46,6 @@ CREATE TABLE operations (
 operation_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 operation_name TEXT UNIQUE NOT NULL
 );
-
 
 CREATE TABLE operation_counts(
 operation_id INTEGER NOT NULL,

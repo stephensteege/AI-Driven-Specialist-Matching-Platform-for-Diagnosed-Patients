@@ -3,21 +3,19 @@ from faker import Faker
 import random
 from tqdm import tqdm
 import os
-from SurgeonConstants import *
-from db_connections import CURSOR, CONN
-
+from db.db_connections import CURSOR, CONN
+from db.SurgeonConstants import *
 
 def insert_fake_data():
     """Fills the db with fake data"""
     print("Creating the db schema")
 
-
-
     # creates the scheme
-    file = open(Path("./SurgeonDatabaseSchema.sql"), "r")
+    schema_path = Path(__file__).resolve().parent / "SurgeonDatabaseSchema.sql"
+    file = open(schema_path, "r")
     create_tables = file.read()
     file.close()
-    
+        
     CURSOR.executescript(create_tables)
     CONN.commit()
 
@@ -89,8 +87,8 @@ def insert_fake_data():
         # remove English from the language pool
         other_language_ids = [lid for lid in language_ids if lid != english_id]
 
-
         # assign 0–2 additional languages
+        chosen_languages = []
         if other_language_ids:
             chosen_languages = random.sample(
                 other_language_ids,
@@ -104,8 +102,6 @@ def insert_fake_data():
             """, (surgeon_id, lang_id))
         # get the id for the next two foriegn keys
         
-        
-
          # each surgeon does multiple operations
         chosen_ops = random.sample(operation_ids, k=random.randint(1, 5))
 
@@ -117,31 +113,32 @@ def insert_fake_data():
             VALUES (?, ?, ?)
         """, (op_id, surgeon_id, count))
             
-        
-
         #print(f"Full Name: {full_name}, Degree: {degree}, Gender: {gender}, Address: {address}, Languages: {languages}, Specialties: {specialties}")
-
 
         #Test Case Doctors
         #Surgeon ID 2001: John Smith General Surgery Speaks English, Spanish, preforms hernia repair
     CURSOR.execute("""
     INSERT INTO surgeon_demographics(first_name, last_name, gender, specialty_id, campus_id, office_phone)
                    VALUES(?, ?, ?, ?, ?, ?)
-                   """, ("John", "Smith", "M", 63, 2,"(111)1111111"))
+                   """, ("John", "Smith", "M", 63, 2, "(111)1111111"))
+
+    test_surgeon_id = CURSOR.lastrowid
+
     CURSOR.execute("""
     INSERT INTO operation_counts(operation_id, surgeon_id, count)
-                   VALUES (?,?,?)
-                    """, (2, 2001, 500))
-    CURSOR.execute(""" 
-    INSERT INTO surgeon_languages(surgeon_id, language_id)
-                   VALUES(?, ?)
-    """, (2001, 6))
-    CURSOR.execute(""" 
-    INSERT INTO surgeon_languages(surgeon_id, language_id)
-                   VALUES(?, ?)
-    """, (2001, 24))
-    
+                   VALUES (?, ?, ?)
+                    """, (2, test_surgeon_id, 500))
 
+    CURSOR.execute(""" 
+    INSERT INTO surgeon_languages(surgeon_id, language_id)
+                   VALUES(?, ?)
+    """, (test_surgeon_id, 6))
+
+    CURSOR.execute(""" 
+    INSERT INTO surgeon_languages(surgeon_id, language_id)
+                   VALUES(?, ?)
+    """, (test_surgeon_id, 24))
+    
     CONN.commit()
     CURSOR.close()
     print("Finished imputing data into the database!")

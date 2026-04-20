@@ -1,7 +1,7 @@
-from db_connections import CURSOR, CONN
+from db.db_connections import CURSOR, CONN
+
 def BuildDatabaseQuery(slots):
    
-    
     joins = []
     conditions = []
     parameters = []
@@ -53,13 +53,29 @@ def BuildDatabaseQuery(slots):
         joins.append("JOIN languages l ON sl.language_id = l.language_id")
 
         language_conditions = []
-        for term in slots['language']:
+        for term in slots["language"]:
             language_conditions.append("l.language_name LIKE ?")
             parameters.append(f"%{term}%")
         conditions.append("(" + " OR ".join(language_conditions) + ")")
 
-    #Add the JOINS
-    query += "\n".join(set(joins))
+    #Gender Filter
+    if slots.get("gender"):
+        gender_conditions = []
+        for term in slots["gender"]:
+            gender_conditions.append("s.gender LIKE ?")
+            parameters.append(f"%{term}%")
+        conditions.append("(" + " OR ".join(gender_conditions) + ")")
+
+    #Add the JOINS in order without duplicates
+    seen = set()
+    ordered_joins = []
+    for join in joins:
+        if join not in seen:
+            seen.add(join)
+            ordered_joins.append(join)
+
+    if ordered_joins:
+        query += "\n" + "\n".join(ordered_joins)
 
     #Add our Where statements
     if conditions:
@@ -74,21 +90,19 @@ def BuildDatabaseQuery(slots):
     print(query)
     return query,parameters
 
+if __name__ == "__main__":
+    slots = {
+        "operation": [],
+        "specialty": [],
+        "location": [],
+        "language": [],
+        "gender": []
+    }
 
+    query, params = BuildDatabaseQuery(slots)
 
-slots = {
-    "operation": [],
-    "specialty": [],
-    "location": [],
-    "language": []
-}
+    CURSOR.execute(query, params)
+    results = CURSOR.fetchall()
 
-
-query, params = BuildDatabaseQuery(slots)
-
-CURSOR.execute(query, params)
-results = CURSOR.fetchall()
-
-for row in results:
-    print(row)
-
+    for row in results:
+        print(row)

@@ -1,7 +1,6 @@
 from pathlib import Path
 import sqlite3
 
-
 PHYSICIAN_DB: Path = Path("./SurgeonsDatabase.sqlite")
 
 # create a db connection check_same_thread allows for multiple threads

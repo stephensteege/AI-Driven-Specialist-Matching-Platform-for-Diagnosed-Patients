@@ -1,7 +1,21 @@
+# Virtual environments
+.venv/
 venv/
+backend/.venv/
 backend/venv/
+
+# Python
 __pycache__/
 *.pyc
+
+# Database
+*.sqlite
+
+# OS / misc
 .DS_Store
-.vscode/backend/models/
+
+# VSCode
+.vscode/
+
+# Model files (large)
 backend/models/

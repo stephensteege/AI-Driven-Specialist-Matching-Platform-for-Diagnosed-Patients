@@ -58,15 +58,21 @@ function showChatbox() {
  * @param {string} text - The message content to display.
  * @param {string} className - CSS class defining the bubble style.
  */
-function addBubble(text, className) {
+
+function addBubble(content, className, isHTML = false) {
   const li = document.createElement("li");
   li.className = className;
-  li.textContent = text;
+
+  if (isHTML) {
+    li.innerHTML = content;
+  } else {
+    li.textContent = content;
+  }
+
   chatbox.appendChild(li);
 
   showChatbox();
 
-  // Scroll to the newest message for better UX.
   li.scrollIntoView({ behavior: "smooth", block: "end" });
 }
 
@@ -77,26 +83,78 @@ function addBubble(text, className) {
  * @param {Object} data - JSON response from backend.
  * @returns {string} - Formatted text for display.
  */
+
 function formatResponse(data) {
-  let text = `Intent: ${data.intent}\n\nSlots:\n`;
+  const structured = data.structured_slots || {};
+  const matches = Array.isArray(data.matches) ? data.matches : [];
+
+  let slotsHTML = "";
   let foundUsefulSlot = false;
 
-  // Only display slots that are not "O" (outside/no label).
-  if (Array.isArray(data.slots) && data.slots.length > 0) {
-    for (const item of data.slots) {
-      if (item.slot !== "O") {
-        text += `• ${item.word} → ${item.slot}\n`;
-        foundUsefulSlot = true;
-      }
+  for (const [slotName, values] of Object.entries(structured)) {
+    if (Array.isArray(values) && values.length > 0) {
+      foundUsefulSlot = true;
+      slotsHTML += `<li><strong>${slotName}:</strong> ${values.join(", ")}</li>`;
     }
   }
 
-  // If no meaningful slots were found, display fallback message.
   if (!foundUsefulSlot) {
-    text += "No slots found.";
+    slotsHTML = `<li>No slots found.</li>`;
   }
 
-  return text.trim();
+  let matchesHTML = "";
+
+  if (matches.length > 0) {
+    matchesHTML = matches
+      .map((match, index) => {
+        const fullName = `${match.first_name} ${match.last_name}`;
+        const badge = index === 0 ? "Top Match" : `Match ${index + 1}`;
+
+        return `
+          <div class="doctor-card">
+            <div class="doctor-avatar-wrap">
+              <img
+                class="doctor-avatar"
+                src="https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=e6eef8&color=1f2937&size=128"
+                alt="${fullName}"
+              />
+            </div>
+
+            <div class="doctor-details">
+              <div class="doctor-badge">${badge}</div>
+              <div class="doctor-name">${fullName}</div>
+              <div class="doctor-meta"><strong>Phone:</strong> ${match.office_phone}</div>
+              <div class="doctor-meta"><strong>Operation Count:</strong> ${match.total_operations}</div>
+            </div>
+          </div>
+        `;
+      })
+      .join("");
+  } else {
+    matchesHTML = `<p class="no-matches">No matching doctors found.</p>`;
+  }
+
+  return `
+    <div class="response-card">
+      <div class="response-section">
+        <p><strong>Intent:</strong> ${data.intent}</p>
+      </div>
+
+      <div class="response-section">
+        <p><strong>Slots:</strong></p>
+        <ul class="slots-list">
+          ${slotsHTML}
+        </ul>
+      </div>
+
+      <div class="response-section">
+        <p><strong>Top Matches:</strong></p>
+        <div class="doctor-card-list">
+          ${matchesHTML}
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 /**
@@ -159,7 +217,7 @@ async function runPrediction(inputText) {
     }
 
     // Display formatted prediction result.
-    addBubble(formatResponse(data), "system_bubble");
+    addBubble(formatResponse(data), "system_bubble", true);
 
   } catch (err) {
     clearTimeout(timeoutId);
