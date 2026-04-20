@@ -1,0 +1,6 @@
+numpy==1.23.5
+transformers==4.33.3
+tokenizers==0.13.3
+huggingface_hub==0.19.4
+sentence-transformers==2.6.1
+datasets==2.14.7
